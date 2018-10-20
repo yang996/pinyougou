@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angularJS测试</title>
+    <script src="js/angular.min.js"></script>
+    <script type="text/javascript">
+        var app=angular.module("app",[]);
+        app.controller("myController",function ($scope,$http) {
+            $http.get("data.json").success(function (response) {
+                $scope.persons=response;
+            }).error(function (response) {
+                alert(response);
+            })
+        })
+    </script>
+</head>
+<body ng-app="app" ng-controller="myController">
+对象数组集合遍历:<br/>
+<table>
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>姓名</th>
+        <th>性别</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="person in persons">
+        <td>{{person.id}}</td>
+        <td>{{person.name}}</td>
+        <td>{{person.gender}}</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
