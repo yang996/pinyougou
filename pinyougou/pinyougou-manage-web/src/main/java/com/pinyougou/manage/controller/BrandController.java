@@ -35,6 +35,7 @@ public class BrandController {
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "rows", defaultValue = "10") Integer rows,
             @RequestBody TbBrand tbBrand) {
+       // return brandService.findPage(page,rows,tbBrand);
         return brandService.findPageByCondition(page,rows,tbBrand);
     }
 
