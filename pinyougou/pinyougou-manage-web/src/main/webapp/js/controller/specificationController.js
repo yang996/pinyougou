@@ -56,7 +56,7 @@ app.controller("specificationController", function ($scope, $controller, specifi
         }
     };
 
-    $scope.searchEntity = {};//初始为空
+    $scope.searchEntity = {};//初始为空,指定json结构,不然后台会报错.因为后台要将json字符串转换为对象
     $scope.search = function (page, rows) {
         specificationService.search(page, rows, $scope.searchEntity).success(function (response) {
             $scope.list = response.rows;
