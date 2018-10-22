@@ -35,4 +35,9 @@ app.service("brandService", function ($http) {
     this.update = function (entity) {
         return $http.post("../brand/update.do", entity);
     };
+
+    //查询品牌列表
+    this.selectOptionList=function () {
+        return $http.get("../brand/selectOptionList.do");
+    }
 });

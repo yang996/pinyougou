@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass = BrandService.class)
 public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandService {
@@ -48,5 +49,10 @@ public class BrandServiceImpl extends BaseServiceImpl<TbBrand> implements BrandS
         List<TbBrand> brandList=brandMapper.selectByExample(example);
         PageInfo<TbBrand> pageInfo=new PageInfo<>(brandList);
         return new PageResult(pageInfo.getTotal(),pageInfo.getList());
+    }
+
+    @Override
+    public List<Map<String, String>> selectOptionList() {
+        return  brandMapper.selectOptionList();
     }
 }

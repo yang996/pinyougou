@@ -8,6 +8,9 @@ import com.pinyougou.vo.Result;
 import com.pinyougou.vo.Specification;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/specification")
 @RestController
 public class SpecificationController {
@@ -82,5 +85,14 @@ public class SpecificationController {
             e.printStackTrace();
         }
         return Result.fail("更新失败");
+    }
+
+    /**
+     * 查询规格数据
+     * @return
+     */
+    @GetMapping("/selectOptionList")
+    public List<Map<String,String>> selectOptionList(){
+        return specificationService.selectOptionList();
     }
 }
