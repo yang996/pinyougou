@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--  引用 dubbo  服务  -->
+    <dubbo:application name="pinyougou-shop-web"/>
+    <dubbo:registry address="zookeeper://192.168.12.168:2181"/>
+    <!--<dubbo:annotation package="com.pinyougou.shop.service.impl"/>-->
+    <dubbo:reference id="sellerService" interface="com.pinyougou.sellergoods.service.SellerService"/>
+
+    <!--放行资源-->
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+    <security:http pattern="/*.html" security="none"/>
+    <security:http pattern="/seller/add.do" security="none"/>
+
+    <!--表单配置-->
+    <security:http use-expressions="false">
+        <!--拦截规则-->
+        <security:intercept-url pattern="/**" access="ROLE_USER"/>
+
+        <!--登录配置-->
+        <security:form-login
+            default-target-url="/admin/index.html"
+            authentication-failure-url="/shoplogin.html"
+            login-page="/shoplogin.html"/>
+
+        <!--退出配置-->
+        <security:logout/>
+
+        <!--关闭csrf认证-->
+        <security:csrf disabled="true"/>
+
+        <!-- 如果使用了 iframe 等框架，希望跳转也是在框架内跳转的话 -->
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
+    </security:http>
+
+    <!--配置加密器,对用户输入的密码进行加密或再和数据库查询出来的密码进行对比-->
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+    <bean id="userDetailsService" class="com.pinyougou.shop.service.impl.UserDetailsServiceImpl">
+        <property name="sellerService" ref="sellerService"/>
+    </bean>
+
+    <!--认证管理器-->
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="userDetailsService">
+            <security:password-encoder ref="passwordEncoder"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>

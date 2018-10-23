@@ -14,6 +14,7 @@
         <module>pinyougou-dao</module>
         <module>pinyougou-sellergoods</module>
         <module>pinyougou-manage-web</module>
+        <module>pinyougou-shop-web</module>
     </modules>
 
 
@@ -225,6 +226,11 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
                 <version>${spring.security.version}</version>
             </dependency>
             <!-- cas -->
