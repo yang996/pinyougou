@@ -14,7 +14,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
-@Service(interfaceClass = SellerService.class)
+@Service(interfaceClass = SellerService.class,timeout =30000 )
 public class SellerServiceImpl extends BaseServiceImpl<TbSeller> implements SellerService {
 
     @Autowired
@@ -40,5 +40,10 @@ public class SellerServiceImpl extends BaseServiceImpl<TbSeller> implements Sell
         PageInfo<TbSeller> pageInfo = new PageInfo<>(list);
 
         return new PageResult(pageInfo.getTotal(), pageInfo.getList());
+    }
+
+    @Override
+    public void updateStatus(TbSeller tbSeller) {
+        sellerMapper.update(tbSeller);
     }
 }

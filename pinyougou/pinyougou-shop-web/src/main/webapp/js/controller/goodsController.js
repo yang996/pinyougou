@@ -136,6 +136,9 @@ app.controller("goodsController", function ($scope, $controller, $location, good
                 $scope.itemCat2List = response;
             });
         }
+        //当重新选择一级分类,重置三级分类和模板id为空
+        $scope.entity.goods.typeTemplateId="";
+        $scope.itemCat3List=[];
     });
 
     //读取三级商品分类列表

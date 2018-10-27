@@ -20,7 +20,7 @@ public class SellerController {
     @PostMapping("/update")
     public Result update(@RequestBody TbSeller tbSeller){
         try {
-            sellerService.update(tbSeller);
+            sellerService.updateStatus(tbSeller);
             return Result.ok("操作成功");
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,9 +1,12 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pinyougou.mapper.SpecificationOptionMapper;
 import com.pinyougou.mapper.TypeTemplateMapper;
+import com.pinyougou.pojo.TbSpecificationOption;
 import com.pinyougou.pojo.TbTypeTemplate;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 import com.pinyougou.service.impl.BaseServiceImpl;
@@ -14,13 +17,15 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass = TypeTemplateService.class)
 public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> implements TypeTemplateService {
 
     @Autowired
     private TypeTemplateMapper typeTemplateMapper;
-
+    @Autowired
+    private SpecificationOptionMapper specificationOptionMapper;
 
     @Override
     public PageResult findAll(Integer page,Integer rows,TbTypeTemplate tbTypeTemplate) {
@@ -45,5 +50,20 @@ public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> imp
         Example.Criteria criteria = example.createCriteria();
         criteria.andIn("id", Arrays.asList(ids));
         typeTemplateMapper.deleteByExample(example);
+    }
+
+    @Override
+    public List<Map> findSpecList(Long id) {
+        TbTypeTemplate typeTemplate = findOne(id);
+        //查询规格
+        List<Map> specList = JSONArray.parseArray(typeTemplate.getSpecIds(), Map.class);
+        //规格对应的选项
+        for (Map map : specList) {
+            TbSpecificationOption parm=new TbSpecificationOption();
+            parm.setSpecId(Long.parseLong(map.get("id").toString()));
+            List<TbSpecificationOption> options = specificationOptionMapper.select(parm);
+            map.put("options",options);
+        }
+        return specList;
     }
 }
