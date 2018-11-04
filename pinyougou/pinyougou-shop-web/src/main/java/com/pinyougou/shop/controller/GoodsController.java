@@ -49,15 +49,26 @@ public class GoodsController {
         return Result.fail("增加失败");
     }
 
+    /**
+     * 根据id查询商品信息
+     * @param id
+     * @return
+     */
     @GetMapping("/findOne")
-    public TbGoods findOne(Long id) {
-        return goodsService.findOne(id);
+    public Goods findGoods(Long id) {
+        return goodsService.findGoods(id);
     }
 
     @PostMapping("/update")
-    public Result update(@RequestBody TbGoods goods) {
+    public Result update(@RequestBody Goods goods) {
         try {
-            goodsService.update(goods);
+            //判断当前商家是否是同一个商家
+            String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (!sellerId.equals(goods.getGoods().getSellerId()))
+            {
+                return Result.fail("操作非法");
+            }
+            goodsService.updateGoods(goods);
             return Result.ok("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +79,7 @@ public class GoodsController {
     @GetMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            goodsService.deleteByIds(ids);
+            goodsService.deleteGoodsByIds(ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,8 +96,41 @@ public class GoodsController {
      */
     @PostMapping("/search")
     public PageResult search(@RequestBody  TbGoods goods, @RequestParam(value = "page", defaultValue = "1")Integer page,
-                               @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
+                              @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
+        //设置商家id;
+        goods.setSellerId(SecurityContextHolder.getContext().getAuthentication().getName());
         return goodsService.search(page, rows, goods);
+    }
+
+
+    /**
+     * 将商品提交审核
+     * @return 审核结果
+     */
+    @GetMapping("/updateStatus")
+    public Result updateStatus(Long[] ids,String status){
+        try {
+            goodsService.updateStatus(ids,status);
+            return Result.ok("操作成功成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail("操作失败");
+        }
+    }
+
+    /**
+     * 商品上架或者下架
+     * @return 操作结果
+     */
+    @GetMapping("/isMarketable")
+    public Result isMarketable(Long[] ids,String status){
+        try {
+           goodsService.isMarketable(ids, status);
+            return Result.ok("操作成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.ok("操作失败");
+        }
     }
 
 }

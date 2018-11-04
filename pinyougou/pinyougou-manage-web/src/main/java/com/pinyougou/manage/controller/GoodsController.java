@@ -2,9 +2,12 @@ package com.pinyougou.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
+import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import com.pinyougou.vo.PageResult;
 import com.pinyougou.vo.Result;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +18,8 @@ public class GoodsController {
 
     @Reference
     private GoodsService goodsService;
+    @Reference
+    private ItemSearchService itemSearchService;
 
     @RequestMapping("/findAll")
     public List<TbGoods> findAll() {
@@ -54,10 +59,33 @@ public class GoodsController {
         return Result.fail("修改失败");
     }
 
+    /**
+     * 审核商品通过,驳回
+     * @return
+     */
+    @GetMapping("/updateStatus")
+    public Result updateStatus(Long[] ids,String status){
+        try {
+            goodsService.updateStatus(ids,status);
+            //商品审核通过,将商品添加进索引库
+            if("2".equals(status)){
+                List<TbItem> itemList = goodsService.findItemByGoodsIdAndStatus(ids, "1");
+                itemSearchService.importItemList(itemList);
+            }
+            return Result.ok("操作成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.ok("操作失败");
+        }
+    }
+
     @GetMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            goodsService.deleteByIds(ids);
+            goodsService.deleteGoodsByIds(ids);
+            //删除solr中对应商品索引数据
+            itemSearchService.deleteItemByGoodsId(ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();

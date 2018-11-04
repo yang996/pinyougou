@@ -86,6 +86,27 @@ app.controller("goodsController", function ($scope, $controller, $location, good
         }
     };
 
+
+    $scope.isMarketable=function (status) {
+        if($scope.selectedIds.length < 1) {
+            alert("请先选择商品");
+            return;
+        }
+        if(confirm("确定要上架/下架选中的商品吗？")){
+            goodsService.isMarketable($scope.selectedIds, status).success(function (response) {
+                if(response.success) {
+                    //刷新列表并清空选中的那些商品
+                    alert(response.message);
+                    $scope.reloadList();
+                    $scope.selectedIds = [];
+                } else {
+                    alert(response.message);
+                }
+            });
+        }
+    }
+
+
     $scope.searchEntity = {};//初始为空
     $scope.search = function (page, rows) {
         goodsService.search(page, rows, $scope.searchEntity).success(function (response) {

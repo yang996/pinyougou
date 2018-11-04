@@ -208,7 +208,6 @@
 					                        </div>
 		                                </div>   
 	                                </div>
-	
 	                                <div class="row data-type">
 	                                	 <table class="table table-bordered table-striped table-hover dataTable">
 						                    <thead>
@@ -222,6 +221,7 @@
 								            </thead>
 						                    <tbody>
 						                      <tr ng-repeat="item in entity.itemList">
+
 										            <td ng-repeat="specItem in entity.goodsDesc.specificationItems">
 										            	{{item.spec[specItem.attributeName]}}
 										            </td>

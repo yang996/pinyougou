@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service(interfaceClass = TypeTemplateService.class)
 public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> implements TypeTemplateService {
@@ -54,6 +52,9 @@ public class TypeTemplateServiceImpl extends BaseServiceImpl<TbTypeTemplate> imp
 
     @Override
     public List<Map> findSpecList(Long id) {
+        if (StringUtils.isEmpty(id)){
+            return null;
+        }
         TbTypeTemplate typeTemplate = findOne(id);
         //查询规格
         List<Map> specList = JSONArray.parseArray(typeTemplate.getSpecIds(), Map.class);

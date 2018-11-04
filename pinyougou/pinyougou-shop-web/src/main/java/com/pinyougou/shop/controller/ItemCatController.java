@@ -29,7 +29,7 @@ public class ItemCatController {
     }
 
     /**
-     * 根據id查詢分類商品
+     * 根据id查询分类商品
      * @param id
      * @return
      */
@@ -38,5 +38,14 @@ public class ItemCatController {
         return itemCatService.findOne(id);
     }
 
+
+    /**
+     * 查询所有分类
+     * @return
+     */
+    @GetMapping("/findAll")
+    public List<TbItemCat> findAll(){
+        return itemCatService.findAll();
+    }
 
 }
