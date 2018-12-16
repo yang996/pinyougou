@@ -5,10 +5,14 @@ import com.pinyougou.pojo.TbSeller;
 import com.pinyougou.sellergoods.service.SellerService;
 import com.pinyougou.vo.PageResult;
 import com.pinyougou.vo.Result;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/seller")
 @RestController
@@ -16,6 +20,38 @@ public class SellerController {
 
     @Reference
     private SellerService sellerService;
+
+    /**
+     * 商家修改密码
+     * @return
+     */
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody Map<String,Object> map){
+        try {
+            //获取商家id
+            String sellerId =
+                    SecurityContextHolder.getContext().getAuthentication().getName();
+            //根据商家id查找商家是否存在
+            TbSeller seller = sellerService.findOne(sellerId);
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            //原密码不正确
+            if (! passwordEncoder.matches(map.get("oldPassword").toString(),seller.getPassword())){
+                return Result.fail("原密码不正确");
+            }else {
+                if (StringUtils.isEmpty(map.get("password"))){
+                    return Result.fail("新密码不能为空");
+                }else {
+                    //对新密码加密后保存
+                    sellerService.updatePassword(sellerId,passwordEncoder.encode(map.get("password").toString()));
+                    return Result.ok("修改密码成功");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.fail("修改密码失败");
+    }
 
     @RequestMapping("/findAll")
     public List<TbSeller> findAll() {

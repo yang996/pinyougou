@@ -7,40 +7,6 @@ app.controller("searchController",function ($scope,$location, searchService) {
         });
     };
 
-    //创建搜索对象
-    $scope.searchMap={"keywords":"", "category":"",
-        "brand":"", "spec":{}, "price":"","pageNo":1, "pageSize":20, "sortField":"", "sort":""};
-
-    //添加过滤条件
-    $scope.addSearchItem=function (key, value) {
-        if("brand"==key || "category"==key || "price"==key){
-            //如果点击的是品牌或者分类
-            $scope.searchMap[key]=value;
-        }else {
-            //点击的是规格
-            $scope.searchMap.spec[key]=value;
-        }
-        //添加过滤条件,默认查询第一页
-        $scope.searchMap.pageNo=1;
-        //点击过滤条件后需要重新搜索
-        $scope.search();
-    };
-
-    //删除过滤条件
-    $scope.removeSearchItem=function (key) {
-        if("brand"==key || "category"==key || "price"==key){
-            //如果点击的是品牌或者分类
-            $scope.searchMap[key]="";
-        }else {
-            //点击的是规格
-            delete $scope.searchMap.spec[key];
-        }
-        //删除过滤条件,默认查询第一页
-        $scope.searchMap.pageNo=1;
-        //点击过滤条件后需要重新搜索
-        $scope.search();
-    };
-    
     //构建页面分页导航条信息
     buildPageInfo=function () {
         //定义要在页面显示的页号的集合

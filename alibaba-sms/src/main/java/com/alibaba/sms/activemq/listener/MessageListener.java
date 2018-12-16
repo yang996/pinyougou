@@ -1,0 +1,43 @@
+package com.alibaba.sms.activemq.listener;
+
+import com.alibaba.sms.util.SmsUtil;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Component;
+
+import java.util.Map;
+
+/**
+ * @ClassName MessageListener
+ * @Author WuYeYang
+ * @Description
+ * @Date 2018/11/6 20:07
+ * @Version 1.0
+ **/
+@Component
+public class MessageListener {
+
+    @Autowired
+    private SmsUtil smsUtil;
+
+    @JmsListener(destination = "alibaba_sms_queue")
+    public void receiveMsg(Map<String,String> map){
+        try {
+            SendSmsResponse response =
+                    smsUtil.sendSms(
+                            map.get("mobile"),
+                            map.get("signName"),
+                            map.get("templateCode"),
+                            map.get("templateParam"));
+            System.out.println(" 短信接口返回的数据----------------");
+            System.out.println("Code=" + response.getCode());
+            System.out.println("Message=" + response.getMessage());
+            System.out.println("RequestId=" + response.getRequestId());
+            System.out.println("BizId=" + response.getBizId());
+        } catch (ClientException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -46,4 +46,13 @@ public class SellerServiceImpl extends BaseServiceImpl<TbSeller> implements Sell
     public void updateStatus(TbSeller tbSeller) {
         sellerMapper.update(tbSeller);
     }
+
+
+    @Override
+    public void updatePassword(String sellerId, String password) {
+        TbSeller seller=new TbSeller();
+        seller.setSellerId(sellerId);
+        seller.setPassword(password);
+        sellerMapper.updateByPrimaryKeySelective(seller);
+    }
 }

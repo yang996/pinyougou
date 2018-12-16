@@ -41,7 +41,6 @@
 <#assign customAttributeList=goodsDesc.customAttributeItems?eval />
 <#--规格列表-->
 <#assign specificationList=goodsDesc.specificationItems?eval />
-
 <div class="py-container">
     <div id="item">
         <div class="crumb-wrap">
